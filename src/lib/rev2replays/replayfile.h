@@ -37,26 +37,21 @@ enum replayfile_character
 struct replayfile_header {
     // Expected to be "REPL"
     char magic[4];
-
-    // Maybe a timestamp?
-    uint32_t unknown0;
-
-    // So far has always been 0x7c53
-    uint16_t unknown1;
+    uint32_t crc32;
+    uint32_t filesize;
 
     // Haven't investigated these yet
-    uint16_t unknown2;
-    uint16_t unknown3;
-    uint16_t unknown4;
+    uint16_t unknown1; // Minor version?
+    uint16_t unknown2; // Major version?
 
     uint8_t  rounds_to_win;
     uint8_t  round_time_gameseconds;
 
     // Needs investigation
-    uint16_t unknown5;
+    uint16_t unknown3;
 
     // Has always been zeroes as far as I can tell
-    uint32_t unknown6[3];
+    uint32_t unknown4[3];
 };
 
 struct replayfile_player {
@@ -75,5 +70,6 @@ struct replayfile_context {
 const char* replayfile_character_to_str(enum replayfile_character character);
 struct replayfile_context* replayfile_create(const char* path);
 void replayfile_destroy(struct replayfile_context* context);
+uint32_t replayfile_compute_crc32(struct replayfile_context* context);
 
 #endif // __REPLAYFILE_H__

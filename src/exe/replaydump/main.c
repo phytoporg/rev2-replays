@@ -22,6 +22,17 @@ int main(int argc, char** argv)
     fprintf(stdout, "Rounds to win: %d\n", context->header.rounds_to_win);
     fprintf(stdout, "Rounds time: %d\n", context->header.round_time_gameseconds);
 
+    const uint32_t headerCRC = context->header.crc32;
+    fprintf(stdout, "CRC32: 0x%08X\n", headerCRC);
+    const uint32_t computedCRC = replayfile_compute_crc32(context);
+    if (computedCRC != headerCRC)
+    {
+        fprintf(stdout, "Computed CRC mismatch: 0x%08X != 0x%08X\n", computedCRC, headerCRC);
+    }
+
+    const uint32_t filesize = context->header.filesize;
+    fprintf(stdout, "File size: %d\n", filesize);
+
     struct replayfile_player* player1 = &context->players[0];
     const enum replayfile_character p1character = player1->character;
     fprintf(stdout, "Player 1 character: %s\n", replayfile_character_to_str(p1character));
